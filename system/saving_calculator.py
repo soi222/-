@@ -8,18 +8,18 @@ class SavingsCalculator:
         self.df = self._load_and_clean_data(csv_file)
     
     def _load_and_clean_data(self, csv_file: str) -> pd.DataFrame:
-        """CSV 파일을 로드하고 데이터를 정리합니다"""
-        # 여러 인코딩을 시도하여 파일 로드
-        encodings = ['euc-kr', 'cp949', 'utf-8', 'latin1']  # euc-kr을 첫 번째로 시도
-        
-        for encoding in encodings:
-            try:
-                df = pd.read_csv(csv_file, encoding=encoding)
-                print(f"✅ CSV 파일 로드 성공 (인코딩: {encoding})")
-                break
-            except UnicodeDecodeError:
-                print(f"❌ 인코딩 {encoding} 실패, 다음 시도...")
-                continue
+    """CSV 파일을 로드하고 데이터를 정리합니다"""
+    # UTF-8을 먼저 시도하도록 순서 변경
+    encodings = ['utf-8', 'utf-8-sig', 'latin1', 'euc-kr', 'cp949']  # utf-8을 첫 번째로
+    
+    for encoding in encodings:
+        try:
+            df = pd.read_csv(csv_file, encoding=encoding)
+            print(f"✅ CSV 파일 로드 성공 (인코딩: {encoding})")
+            break
+        except UnicodeDecodeError:
+            print(f"❌ 인코딩 {encoding} 실패, 다음 시도...")
+            continue
             except Exception as e:
                 print(f"❌ 기타 오류 (인코딩 {encoding}): {e}")
                 continue
